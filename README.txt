@@ -8,6 +8,6 @@ tailwindcss
 autoprefixer
 postcss
 
-Day4
+Day4 
 npm install vaul
 npm install react-hook-form zod @hookform/resolvers sonner @radix-ui/react-dialog
