@@ -4,27 +4,34 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { login } from "@/services/auth";
+import { useAuthStore } from "@/stores/useAuthStore";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { toast } from "sonner";
 
 export default function LoginForm() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
-    if (email && password) {
-      if (email === "ngocquy23@forcs.io" && password === "123") {
-        toast.success("Login successful", { duration: 3000 });
-        const user = { email: email, password: password };
-        document.cookie = `user=${encodeURIComponent(
-          JSON.stringify(user)
-        )}; path=/; max-age=86400`;
+    if (username && password) {
+      try {
+        const data = await login(); // gọi API dummyjson
+        console.log("✅ Login data:", data);
+
+        // Lưu token và user vào Zustand
+        useAuthStore
+          .getState()
+          .setAuth(data.token, { id: data.id, username: data.username });
+
+        toast.success("Login successful!");
         router.push("/dashboard");
-      } else {
-        toast.error("Invalid email or password", { duration: 5000 });
+      } catch (error) {
+        toast.error("Login failed.");
+        console.error(error);
       }
     }
   };
@@ -36,8 +43,8 @@ export default function LoginForm() {
       <Input
         type="email"
         placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        value={username}
+        onChange={(e) => setUsername(e.target.value)}
       />
       <Input
         type="password"

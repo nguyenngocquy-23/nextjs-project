@@ -11,6 +11,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const handleLogout = () => {
     document.cookie = "user=; path=/; max-age=0";
+    console.log("Logged out");
     router.push("/login");
   };
 

@@ -13,7 +13,11 @@ import {
   getPaginationRowModel,
 } from "@tanstack/react-table";
 import { Product } from "@/type";
-import { usePaginationProduct, useProducts } from "@/hooks/useProducts";
+import {
+  usePaginationProduct,
+  useSearchProduct,
+  useSortProduct,
+} from "@/hooks/useProducts";
 
 export default function ProductTable() {
   const searchParams = useSearchParams();
@@ -27,6 +31,8 @@ export default function ProductTable() {
   const [search, setSearch] = useState(urlSearch);
   const [page, setPage] = useState(urlPage);
   const [pageSize, setPageSize] = useState(urlPageSize);
+  const [sortType, setSortType] = useState<"asc" | "desc">("asc");
+  const [sortField, setSortField] = useState<string>("id");
 
   const [columnVisibility, setColumnVisibility] = useState<
     Record<string, boolean>
@@ -38,23 +44,61 @@ export default function ProductTable() {
   });
 
   useEffect(() => {
-    setSearch(urlSearch);
-    setPage(urlPage);
-    setPageSize(urlPageSize);
-  }, [urlSearch, urlPage, urlPageSize]);
-
-  useEffect(() => {
     const handler = setTimeout(() => {
       const params = new URLSearchParams();
       if (search) params.set("search", search);
       if (page !== 1) params.set("page", page.toString());
       if (pageSize !== 10) params.set("pageSize", pageSize.toString());
+      if (sortField) params.set("sortField", sortField);
+      if (sortType) params.set("sortType", sortType);
       router.replace(`?${params.toString()}`, { scroll: false });
     }, 300);
     return () => clearTimeout(handler);
-  }, [search, page, pageSize, router]);
+  }, [search, page, pageSize, sortField, sortType, router]);
 
-  const {data, error, isLoading } = usePaginationProduct(page, pageSize);
+  const handleSort = (field: string) => {
+    setPage(1);
+    if (field === sortField) {
+      setSortType((prev) => (prev === "asc" ? "desc" : "asc"));
+    } else {
+      setSortField(field);
+      setSortType("asc");
+    }
+  };
+
+  // pagination
+  // const { data, error, isLoading } = usePaginationProduct(page, pageSize);
+  // sorting
+  const {
+    data: sortedData,
+    isLoading: isSorting,
+    error: sortError,
+  } = useSortProduct(sortField, page, pageSize, sortType);
+
+  const {
+    data: searchData,
+    isLoading: isSearching,
+    error: searchError,
+  } = useSearchProduct(search);
+
+  const displayData =
+    search.trim() !== ""
+      ? searchData?.products ?? []
+      : sortedData?.products ?? [];
+
+  const totalItems =
+    search.trim() !== "" ? searchData?.total ?? 0 : sortedData?.total ?? 0;
+
+  const isLoading = isSorting || isSearching;
+
+  const isError = sortError || searchError;
+
+  useEffect(() => {
+    setPage(1);
+    if (search.trim() !== "") {
+      const params = new URLSearchParams();
+    }
+  }, [search]);
 
   const columnHelper = createColumnHelper<Product>();
 
@@ -62,39 +106,59 @@ export default function ProductTable() {
     () => [
       columnHelper.accessor("id", { header: "ID" }),
       columnHelper.accessor("title", {
-        header: "Name",
+        header: () => (
+          <button
+            onClick={() => handleSort("title")}
+            className="flex items-center space-x-1"
+          >
+            <span>Name</span>
+            {sortField === "title" && (
+              <span>{sortType === "asc" ? "▲" : "▼"}</span>
+            )}
+          </button>
+        ),
         cell: (info) => (
           <a
             href={`${pathname}/${info.row.original.id}`}
-            className="
-              relative
-              after:content-['']
-              after:absolute
-              after:left-0
-              after:bottom-0
-              after:w-0
-              after:h-[2px]
-              after:bg-blue-500
-              after:transition-all
-              after:duration-300
-              hover:after:w-full
-            "
+            className="hover:underline text-blue-600"
           >
             {info.getValue()}
           </a>
         ),
       }),
       columnHelper.accessor("price", {
-        header: "Price",
+        header: () => (
+          <button
+            onClick={() => handleSort("price")}
+            className="flex items-center space-x-1"
+          >
+            <span>Price</span>
+            {sortField === "price" && (
+              <span>{sortType === "asc" ? "▲" : "▼"}</span>
+            )}
+          </button>
+        ),
         cell: (info) => `$${info.getValue().toFixed(2)}`,
       }),
-      columnHelper.accessor("stock", { header: "Stock" }),
+      columnHelper.accessor("stock", {
+        header: () => (
+          <button
+            onClick={() => handleSort("stock")}
+            className="flex items-center space-x-1"
+          >
+            <span>Stock</span>
+            {sortField === "stock" && (
+              <span>{sortType === "asc" ? "▲" : "▼"}</span>
+            )}
+          </button>
+        ),
+      }),
     ],
-    []
+    [sortField, sortType]
   );
 
   const table = useReactTable({
-    data: data?.products ?? [],
+    data: displayData ?? [],
     columns,
     state: {
       columnVisibility,
@@ -104,7 +168,7 @@ export default function ProductTable() {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  if (error) return <div>Error loading products.</div>;
+  if (isError) return <div>Error loading products.</div>;
 
   return (
     <div>
@@ -166,7 +230,7 @@ export default function ProductTable() {
                 Loading...
               </td>
             </tr>
-          ) : data?.products.length === 0 ? (
+          ) : displayData.length === 0 ? (
             <tr>
               <td colSpan={columns.length} className="text-center py-4">
                 No products found.
@@ -199,19 +263,19 @@ export default function ProductTable() {
         </button>
 
         <span>
-          Page {page} of {Math.ceil((data?.total ?? 0) / pageSize)}
+          Page {page} of {Math.ceil((totalItems ?? 0) / pageSize)}
         </span>
 
         <button
           className="px-3 py-1 border rounded disabled:opacity-50"
           onClick={() =>
             setPage((old) =>
-              data
-                ? Math.min(old + 1, Math.ceil(data.total / pageSize))
+              displayData
+                ? Math.min(old + 1, Math.ceil(totalItems / pageSize))
                 : old + 1
             )
           }
-          disabled={page === Math.ceil((data?.total ?? 0) / pageSize)}
+          disabled={page === Math.ceil((totalItems ?? 0) / pageSize)}
         >
           Next
         </button>

@@ -10,12 +10,12 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const cookieStore = await cookies();
-  const user = cookieStore.get("user");
+  // const cookieStore = await cookies();
+  // const user = cookieStore.get("user");
 
-  if (!user) {
-    redirect("/login");
-  }
+  // if (!user) {
+  //   redirect("/login");
+  // }
   return (
     <div className="flex h-screen">
       <Sidebar />
