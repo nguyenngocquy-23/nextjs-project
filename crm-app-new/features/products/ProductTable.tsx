@@ -22,6 +22,10 @@ import { Plus, Trash } from "lucide-react";
 import clsx from "clsx";
 import { useAddToCart } from "@/hooks/useCart";
 
+import { Button } from "@/components/ui/button";
+import { set } from "zod";
+import { AlertDialogDemo } from "@/components/AlertDialog";
+
 export default function ProductTable() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -72,22 +76,21 @@ export default function ProductTable() {
   const { mutate: deleteProduct } = useDeleteProduct();
   const { mutate: addToCart } = useAddToCart();
 
-  const handleAddToCart = (id: number) => {
-    mutate(id, {
+  const handleAddToCart = (productId: number) => {
+    addToCart([{ id: productId, quantity: 1 }], {
       onSuccess: () => {
         toast.success("Product deleted successfully!");
       },
     });
   };
-
-  const handleDelete = (id: number) => {
-    if (confirm(`Are you sure you want to delete product ${id}?`)) {
-      mutate(id, {
-        onSuccess: () => {
-          toast.success("Product deleted successfully!");
-        },
-      });
-    }
+  // const [showDialog, setShowDialog] = useState(false);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  
+  const handleDelete = () => {
+    console.log("deleteId", deleteId);
+    
+    if(deleteId === null) return;
+    toast.info("Deleting product..." + deleteId);
   };
 
   // pagination
@@ -192,7 +195,7 @@ export default function ProductTable() {
                 <Plus />
               </button>
               <button
-                onClick={() => handleDelete(product.id)}
+                onClick={() => setDeleteId(product.id)}
                 className="px-2 py-1 text-sm text-red-500 rounded hover:text-red-600"
               >
                 <Trash />
@@ -255,6 +258,16 @@ export default function ProductTable() {
         </div>
       </div>
 
+      <AlertDialogDemo
+        showDialog={deleteId !== null}
+        setShowDialog={(id) => {
+          if (!id) setDeleteId(null);
+          else setDeleteId(deleteId);
+        }}
+        titleAlert="Are you sure?"
+        descriptionAlert="This action cannot be undone. This will permanently delete the product."
+        handleContinue={() => handleDelete()}
+      />
       <table className="min-w-full border-collapse border border-gray-300">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (

@@ -1,18 +1,16 @@
-import { addToCart } from "@/services/carts";
-import {
-  addProduct,
-} from "@/services/products";
-import { useMutation } from "@tanstack/react-query";
+import { addToCart, getCartByUserId } from "@/services/carts";
+import { CartProduct, CartResponse, OverCartResponse } from "@/type";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
-// export const useCreateCart = () => {
-//   return useQuery<>({
-//     queryKey: ["products"],
-//     queryFn: fetchAllProducts,
-//   });
-// };
+export const useGetCart = () => {
+  return useQuery<OverCartResponse>({
+    queryKey: ['cart'],
+    queryFn: () => getCartByUserId(),
+  })
+};
 
 export const useAddToCart = () => {
-  return useMutation({
-    mutationFn: () => addToCart(),
+  return useMutation<CartResponse, Error, CartProduct[]>({
+    mutationFn: (products) => addToCart(products),
   });
 };

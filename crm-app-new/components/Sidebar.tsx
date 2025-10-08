@@ -38,6 +38,16 @@ export default function Sidebar() {
         >
           Products
         </Link>
+        <Link
+          href="/dashboard/products"
+          className={`block px-2 py-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-all duration-300 ${
+            isActive("carts")
+              ? "bg-black hover:bg-black text-white hover:cursor-default pointer-events-none"
+              : ""
+          }`}
+        >
+          Carts
+        </Link>
         {/* Add more links */}
       </nav>
     </aside>

@@ -52,11 +52,34 @@ export type ProductResponse = {
   limit: number;
 };
 
+export type CartProduct = {
+  id: number;
+  quantity: number;
+};
+
 export type CartResponse = {
   id: number;
   userId: number;
-  products: [Product];
+  products: [CartItem];
   total: number;
   discountedTotal: number;
   totalQuantity: number;
+};
+
+export type OverCartResponse = {
+  carts: CartResponse[];
+  total: number;
+  skip: number;
+  limit: number;
+};
+
+export type CartItem = {
+  id: number;
+  title: string;
+  price: number;
+  quantity: number;
+  total: number;
+  discountPercentage: number;
+  discountedPrice: number;
+  thumbnail: string;
 };
