@@ -48,6 +48,15 @@ export type Product = {
 export type ProductResponse = {
   products: Product[];
   total: number;
-  skip:number;
-  limit:number;
+  skip: number;
+  limit: number;
+};
+
+export type CartResponse = {
+  id: number;
+  userId: number;
+  products: [Product];
+  total: number;
+  discountedTotal: number;
+  totalQuantity: number;
 };

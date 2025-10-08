@@ -1,8 +1,6 @@
 // app/dashboard/products/page.tsx
 
-import ProductTable from "@/features/auth/components/ProductTable";
-
-
+import ProductTable from "@/features/products/ProductTable";
 
 export default function ProductsPage() {
   return (

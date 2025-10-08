@@ -1,6 +1,14 @@
-import { fetchAllProducts, paginationProducts, searchProducts, sortProducts } from "@/services/products";
-import { ProductResponse } from "@/type";
-import { useQuery } from "@tanstack/react-query";
+import {
+  addProduct,
+  deleteProduct,
+  fetchAllProducts,
+  paginationProducts,
+  searchProducts,
+  sortProducts,
+  updateProduct,
+} from "@/services/products";
+import { Product, ProductResponse } from "@/type";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 export const useProducts = () => {
   return useQuery<ProductResponse>({
@@ -16,7 +24,12 @@ export const usePaginationProduct = (page: number, limit: number) => {
   });
 };
 
-export const useSortProduct = (title: string, page: number, limit: number, sortType: string) => {
+export const useSortProduct = (
+  title: string,
+  page: number,
+  limit: number,
+  sortType: string
+) => {
   return useQuery<ProductResponse>({
     queryKey: ["sort-products", title, page, limit, sortType],
     queryFn: () => sortProducts(title, page, limit, sortType),
@@ -27,5 +40,23 @@ export const useSearchProduct = (key: string) => {
   return useQuery<ProductResponse>({
     queryKey: ["search-products", key],
     queryFn: () => searchProducts(key),
+  });
+};
+
+export const useAddProduct = () => {
+  return useMutation({
+    mutationFn: (newProduct: Product) => addProduct(newProduct),
+  });
+};
+
+export const useUpdateProduct = () => {
+  return useMutation({
+    mutationFn: (product: Product) => updateProduct(product),
+  });
+};
+
+export const useDeleteProduct = () => {
+  return useMutation({
+    mutationFn: (productId: number) => deleteProduct(productId),
   });
 };

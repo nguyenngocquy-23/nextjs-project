@@ -3,8 +3,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
-import { useQuery } from "@tanstack/react-query";
-
 import {
   createColumnHelper,
   flexRender,
@@ -14,10 +12,15 @@ import {
 } from "@tanstack/react-table";
 import { Product } from "@/type";
 import {
+  useDeleteProduct,
   usePaginationProduct,
   useSearchProduct,
   useSortProduct,
 } from "@/hooks/useProducts";
+import { toast } from "sonner";
+import { Plus, Trash } from "lucide-react";
+import clsx from "clsx";
+import { useAddToCart } from "@/hooks/useCart";
 
 export default function ProductTable() {
   const searchParams = useSearchParams();
@@ -63,6 +66,27 @@ export default function ProductTable() {
     } else {
       setSortField(field);
       setSortType("asc");
+    }
+  };
+
+  const { mutate: deleteProduct } = useDeleteProduct();
+  const { mutate: addToCart } = useAddToCart();
+
+  const handleAddToCart = (id: number) => {
+    mutate(id, {
+      onSuccess: () => {
+        toast.success("Product deleted successfully!");
+      },
+    });
+  };
+
+  const handleDelete = (id: number) => {
+    if (confirm(`Are you sure you want to delete product ${id}?`)) {
+      mutate(id, {
+        onSuccess: () => {
+          toast.success("Product deleted successfully!");
+        },
+      });
     }
   };
 
@@ -153,8 +177,32 @@ export default function ProductTable() {
           </button>
         ),
       }),
+      columnHelper.display({
+        id: "actions",
+        header: "Actions",
+        meta: { className: "w-[100px] text-center" },
+        cell: ({ row }) => {
+          const product = row.original; // object Product hiện tại
+          return (
+            <div className="flex gap-2 justify-center">
+              <button
+                onClick={() => handleAddToCart(product.id)}
+                className="px-2 py-1 text-sm text-green-500 rounded hover:text-green-600"
+              >
+                <Plus />
+              </button>
+              <button
+                onClick={() => handleDelete(product.id)}
+                className="px-2 py-1 text-sm text-red-500 rounded hover:text-red-600"
+              >
+                <Trash />
+              </button>
+            </div>
+          );
+        },
+      }),
     ],
-    [sortField, sortType]
+    [sortField, sortType, pathname]
   );
 
   const table = useReactTable({
@@ -198,6 +246,12 @@ export default function ProductTable() {
               <span>{column.id}</span>
             </label>
           ))}
+          <button
+            className="bg-black text-white px-3 py-1 rounded-md"
+            onClick={() => router.push(`products/add`)}
+          >
+            Add product
+          </button>
         </div>
       </div>
 
@@ -205,20 +259,28 @@ export default function ProductTable() {
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id} className="bg-gray-100">
-              {headerGroup.headers.map((header) => (
-                <th
-                  key={header.id}
-                  className="border border-gray-300 px-3 py-1 text-left"
-                  colSpan={header.colSpan}
-                >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </th>
-              ))}
+              {headerGroup.headers.map((header) => {
+                const meta = header.column.columnDef.meta as {
+                  className?: string;
+                };
+                return (
+                  <th
+                    key={header.id}
+                    className={clsx(
+                      "border border-gray-300 px-3 py-1 text-left text-sm font-medium",
+                      meta?.className // ✅ lấy class riêng cho từng cột (nếu có)
+                    )}
+                    colSpan={header.colSpan}
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </th>
+                );
+              })}
             </tr>
           ))}
         </thead>
@@ -282,4 +344,7 @@ export default function ProductTable() {
       </div>
     </div>
   );
+}
+function mutate(id: number, arg1: { onSuccess: () => void }) {
+  throw new Error("Function not implemented.");
 }

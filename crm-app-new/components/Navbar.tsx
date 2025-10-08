@@ -18,7 +18,7 @@ export default function Navbar() {
   useEffect(() => {
     const pageName = () => {
       const parts = pathname.split("/");
-      return Number(parts[parts.length - 1])
+      return (Number(parts[parts.length - 1]) || parts[parts.length - 1] === "add")
         ? parts[parts.length - 2] || ""
         : parts[parts.length - 1] || "";
     };

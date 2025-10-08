@@ -8,7 +8,7 @@ export default function Sidebar() {
 
   const isActive = (path: string) => {
     const parts = pathname.split("/");
-    if (Number(parts[parts.length - 1])) {
+    if (Number(parts[parts.length - 1]) || parts[parts.length - 1] === "add") {
       return (parts[parts.length - 2] || "") == path;
     } else {
       return (parts[parts.length - 1] || "") == path;
