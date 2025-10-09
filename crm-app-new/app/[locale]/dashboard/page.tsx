@@ -2,10 +2,11 @@
 // 'use client'
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
+import { useTranslations } from "next-intl";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-export default async function DashboardLayout({
+export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -16,9 +17,10 @@ export default async function DashboardLayout({
   // if (!user) {
   //   redirect("/login");
   // }
+  const t = useTranslations("Dashboard");
   return (
     <div className="flex">
-      <p className="text-4xl text-red-400">Hello my friend</p>
+      <p className="text-4xl text-red-400">{t("title")}</p>
     </div>
   );
 }

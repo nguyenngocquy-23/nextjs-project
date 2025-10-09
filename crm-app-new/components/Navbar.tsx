@@ -4,6 +4,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { Button } from "./ui/button";
 import { useEffect, useState } from "react";
 import { ThemeSwitcher } from "./ThemeSwitcher";
+import LocaleSwitcherSelect from "./SwitchLanguage";
+import { useTranslations } from "next-intl";
 
 export default function Navbar() {
   const [title, setTitle] = useState("Dashboard");
@@ -14,29 +16,38 @@ export default function Navbar() {
     console.log("Logged out");
     router.push("/login");
   };
+  
+  const [pageKey, setPageKey] = useState<string>("Dashboard");
+
+  const tLogout = useTranslations("Logout");
+  const tNavbar = useTranslations("Navbar");
 
   useEffect(() => {
     const pageName = () => {
       const parts = pathname.split("/");
-      return (Number(parts[parts.length - 1]) || parts[parts.length - 1] === "add")
+      return Number(parts[parts.length - 1]) ||
+        parts[parts.length - 1] === "add"
         ? parts[parts.length - 2] || ""
         : parts[parts.length - 1] || "";
     };
     const name = pageName();
     setTitle(name.charAt(0).toUpperCase() + name.slice(1));
+    setPageKey(name || "Dashboard");
   }, [pathname]);
 
   return (
     <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 flex items-center justify-between">
       <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-        {title}
+       
+        {tNavbar(pageKey.charAt(0).toUpperCase() + pageKey.slice(1))}
       </h1>
       <div className="flex items-center gap-3">
         <div className="flex items-center">
           {/* Locale switcher (i18n) bạn sẽ thêm sau) */}
           <ThemeSwitcher />
+          <LocaleSwitcherSelect />
         </div>
-        <Button onClick={() => handleLogout()}>Logout</Button>
+        <Button onClick={() => handleLogout()}>{tLogout("title")}</Button>
       </div>
     </header>
   );

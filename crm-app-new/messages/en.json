@@ -1,5 +1,45 @@
 {
+  "Logout": {
+    "title": "Logout"
+  },
   "HomePage": {
-    "title": "Hello world!"
+    "title": "Welcome to our shop!",
+    "description": "Find the best products here."
+  },
+  "Dashboard": {
+    "title": "Your Dashboard",
+    "cart": "Go to Cart"
+  },
+  "Product": {
+    "title": "List Products",
+    "add": "Add Product",
+    "search": "Search Product",
+    "th-id": "Id",
+    "th-title": "Title",
+    "th-price": "Price",
+    "th-stock": "Stock",
+    "th-actions": "Actions",
+    "next": "Next",
+    "previous": "Previous",
+    "loading": "Loading...",
+    "no-data": "No products found.",
+    "page": "Page",
+    "of": "of"
+  },
+  "Navbar": {
+    "Dashboard": "Dashboard",
+    "Products": "Products",
+    "Carts": "Cart",
+    "Logout": "Logout"
+  },
+  "Cart": {
+    "title": "Your Cart",
+    "checkout": "Proceed to Checkout",
+    "total": "Total"
+  },
+  "Toast-product": {
+    "product-added": "Product added to cart!",
+    "delete-product": "Product {id} deleted successfully!",
+    "error": "An error occurred. Please try again."
   }
 }

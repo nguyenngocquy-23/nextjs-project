@@ -1,4 +1,13 @@
-import { CartProduct, CartResponse, Product } from "@/type";
+// services/carts.ts
+import { CartItem, CartResponse, Product } from "@/type";
+
+export const getCartById = async (cartId: number) => {
+  const response = await fetch(`https://dummyjson.com/carts/${cartId}`);
+  if (!response.ok) {
+    throw new Error("Network response swas not ok");
+  }
+  return response.json();
+};
 
 export const getCartByUserId = async () => {
   const response = await fetch("https://dummyjson.com/carts");
@@ -9,7 +18,7 @@ export const getCartByUserId = async () => {
 };
 
 export const addToCart = async (
-  products: CartProduct[]
+  products: CartItem[]
 ): Promise<CartResponse> => {
   const response = await fetch("https://dummyjson.com/carts/add", {
     method: "POST",

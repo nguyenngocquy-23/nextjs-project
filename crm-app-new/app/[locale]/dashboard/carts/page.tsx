@@ -1,14 +1,22 @@
 "use client";
 
-import { useGetCart } from "@/hooks/useCart";
-import { CartItem, Product } from "@/type";
+import { useGetOverCart } from "@/hooks/useCart";
+import { CartItem } from "@/type";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { toast } from "sonner";
 
 export default function CartPage() {
-  const { data, isLoading, isError } = useGetCart();
+  const router = () => {
+    toast.error("Chức năng đang phát triển");
+  }
+  const { data, isLoading, isError } = useGetOverCart();
+
+  const tCart = useTranslations("Cart");
 
   if (isLoading) return <p className="p-4">Loading cart...</p>;
-  if (isError) return <p className="p-4 text-red-500">Failed to load cart data.</p>;
+  if (isError)
+    return <p className="p-4 text-red-500">Failed to load cart data.</p>;
 
   // API trả về dạng { carts: [...], total, skip, limit }
   const carts = data?.carts ?? [];
@@ -18,13 +26,14 @@ export default function CartPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-semibold mb-4">🛒 Your Cart</h1>
+      <h1 className="text-3xl font-semibold mb-4">{tCart("title")}</h1>
 
       <div className="bg-white rounded-2xl shadow-sm border p-4">
         {cart.products.map((item: CartItem) => (
           <div
             key={item.id}
-            className="flex items-center justify-between border-b py-3 last:border-none"
+            className="flex items-center justify-between border-b p-3 rounded-md last:border-none hover:cursor-pointer hover:-translate-y-2 hover:shadow-md duration-300"
+            onClick={router}
           >
             <div className="flex items-center gap-4">
               <Image
@@ -53,7 +62,7 @@ export default function CartPage() {
           Total Items: <span className="font-semibold">{cart.totalProducts}</span>
         </p> */}
         <p className="text-xl font-bold text-blue-600">
-          Total: ${cart.discountedTotal}
+          {tCart("total")}: ${cart.discountedTotal}
         </p>
       </div>
     </div>

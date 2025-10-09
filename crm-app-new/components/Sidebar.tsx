@@ -1,5 +1,6 @@
 // components/Sidebar.tsx
 "use client";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -15,6 +16,8 @@ export default function Sidebar() {
     }
   };
 
+  const tNavbar = useTranslations("Navbar");
+
   return (
     <aside className="w-64 bg-gray-100 dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 p-4">
       <nav className="space-y-2">
@@ -26,7 +29,7 @@ export default function Sidebar() {
               : ""
           }`}
         >
-          Dashboard
+          {tNavbar("Dashboard")}
         </Link>
         <Link
           href="/dashboard/products"
@@ -36,17 +39,17 @@ export default function Sidebar() {
               : ""
           }`}
         >
-          Products
+          {tNavbar("Products")}
         </Link>
         <Link
-          href="/dashboard/products"
+          href="/dashboard/carts"
           className={`block px-2 py-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-800 transition-all duration-300 ${
             isActive("carts")
               ? "bg-black hover:bg-black text-white hover:cursor-default pointer-events-none"
               : ""
           }`}
         >
-          Carts
+          {tNavbar("Carts")}
         </Link>
         {/* Add more links */}
       </nav>

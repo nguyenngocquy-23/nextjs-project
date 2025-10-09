@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, use } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 import {
@@ -13,7 +13,6 @@ import {
 import { Product } from "@/type";
 import {
   useDeleteProduct,
-  usePaginationProduct,
   useSearchProduct,
   useSortProduct,
 } from "@/hooks/useProducts";
@@ -23,8 +22,8 @@ import clsx from "clsx";
 import { useAddToCart } from "@/hooks/useCart";
 
 import { Button } from "@/components/ui/button";
-import { set } from "zod";
 import { AlertDialogDemo } from "@/components/AlertDialog";
+import { useTranslations } from "next-intl";
 
 export default function ProductTable() {
   const searchParams = useSearchParams();
@@ -40,6 +39,9 @@ export default function ProductTable() {
   const [pageSize, setPageSize] = useState(urlPageSize);
   const [sortType, setSortType] = useState<"asc" | "desc">("asc");
   const [sortField, setSortField] = useState<string>("id");
+
+  const tProduct = useTranslations("Product");
+  const tToast = useTranslations("Toast-product");
 
   const [columnVisibility, setColumnVisibility] = useState<
     Record<string, boolean>
@@ -77,7 +79,17 @@ export default function ProductTable() {
   const { mutate: addToCart } = useAddToCart();
 
   const handleAddToCart = (productId: number) => {
-    addToCart([{ id: productId, quantity: 1 }], {
+    const product = {
+      id: productId,
+      title: "Sample Product",
+      price: 100,
+      quantity: 1,
+      total: 100,
+      discountPercentage: 10,
+      discountedPrice: 90,
+      thumbnail: "https://example.com/image.jpg",
+    };
+    addToCart([product], {
       onSuccess: () => {
         toast.success("Product deleted successfully!");
       },
@@ -85,12 +97,20 @@ export default function ProductTable() {
   };
   // const [showDialog, setShowDialog] = useState(false);
   const [deleteId, setDeleteId] = useState<number | null>(null);
-  
+
   const handleDelete = () => {
-    console.log("deleteId", deleteId);
-    
-    if(deleteId === null) return;
-    toast.info("Deleting product..." + deleteId);
+    if (deleteId === null) return;
+    deleteProduct(deleteId, {
+      onSuccess: () => {
+        toast.success(tToast("delete-product", { id: deleteId }));
+        setDeleteId(null);
+        const newList = listProducts.filter((item) => item.id !== deleteId);
+        setListProducts(newList);
+      },
+      onError: () => {
+        toast.error(tToast("error"));
+      },
+    });
   };
 
   // pagination
@@ -113,6 +133,15 @@ export default function ProductTable() {
       ? searchData?.products ?? []
       : sortedData?.products ?? [];
 
+  useEffect(() => {
+    if (displayData.length > 0 && listProducts.length === 0) {
+      setListProducts(displayData);
+    }
+  }, [displayData]);
+
+  const [listProducts, setListProducts] = useState<Product[]>([]);
+  // console.log("listProducts", listProducts);
+
   const totalItems =
     search.trim() !== "" ? searchData?.total ?? 0 : sortedData?.total ?? 0;
 
@@ -131,14 +160,14 @@ export default function ProductTable() {
 
   const columns = useMemo(
     () => [
-      columnHelper.accessor("id", { header: "ID" }),
+      columnHelper.accessor("id", { header: tProduct("th-id") }),
       columnHelper.accessor("title", {
         header: () => (
           <button
             onClick={() => handleSort("title")}
             className="flex items-center space-x-1"
           >
-            <span>Name</span>
+            <span>{tProduct("th-title")}</span>
             {sortField === "title" && (
               <span>{sortType === "asc" ? "▲" : "▼"}</span>
             )}
@@ -159,7 +188,7 @@ export default function ProductTable() {
             onClick={() => handleSort("price")}
             className="flex items-center space-x-1"
           >
-            <span>Price</span>
+            <span>{tProduct("th-price")}</span>
             {sortField === "price" && (
               <span>{sortType === "asc" ? "▲" : "▼"}</span>
             )}
@@ -173,7 +202,7 @@ export default function ProductTable() {
             onClick={() => handleSort("stock")}
             className="flex items-center space-x-1"
           >
-            <span>Stock</span>
+            <span>{tProduct("th-stock")}</span>
             {sortField === "stock" && (
               <span>{sortType === "asc" ? "▲" : "▼"}</span>
             )}
@@ -182,7 +211,7 @@ export default function ProductTable() {
       }),
       columnHelper.display({
         id: "actions",
-        header: "Actions",
+        header: tProduct("th-actions"),
         meta: { className: "w-[100px] text-center" },
         cell: ({ row }) => {
           const product = row.original; // object Product hiện tại
@@ -209,7 +238,7 @@ export default function ProductTable() {
   );
 
   const table = useReactTable({
-    data: displayData ?? [],
+    data: listProducts ?? [],
     columns,
     state: {
       columnVisibility,
@@ -226,7 +255,7 @@ export default function ProductTable() {
       <div className="mb-4 flex justify-between items-center">
         <input
           type="text"
-          placeholder="Search products..."
+          placeholder={`${tProduct("search")}...`}
           value={search}
           onChange={(e) => {
             setSearch(e.target.value);
@@ -246,19 +275,20 @@ export default function ProductTable() {
                 checked={column.getIsVisible()}
                 onChange={() => column.toggleVisibility()}
               />
-              <span>{column.id}</span>
+              <span>{tProduct(`th-` + column.id)}</span>
             </label>
           ))}
           <button
             className="bg-black text-white px-3 py-1 rounded-md"
             onClick={() => router.push(`products/add`)}
           >
-            Add product
+            {tProduct("add")}
           </button>
         </div>
       </div>
 
       <AlertDialogDemo
+        mainAction="Continue"
         showDialog={deleteId !== null}
         setShowDialog={(id) => {
           if (!id) setDeleteId(null);
@@ -267,7 +297,14 @@ export default function ProductTable() {
         titleAlert="Are you sure?"
         descriptionAlert="This action cannot be undone. This will permanently delete the product."
         handleContinue={() => handleDelete()}
-      />
+      >
+        <Button variant="destructive" onClick={() => setDeleteId(null)}>
+          No
+        </Button>
+        <Button variant="default" onClick={() => handleDelete()}>
+          Yes
+        </Button>
+      </AlertDialogDemo>
       <table className="min-w-full border-collapse border border-gray-300">
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -302,13 +339,13 @@ export default function ProductTable() {
           {isLoading ? (
             <tr>
               <td colSpan={columns.length} className="text-center py-4">
-                Loading...
+                {tProduct("loading")}
               </td>
             </tr>
-          ) : displayData.length === 0 ? (
+          ) : listProducts.length === 0 ? (
             <tr>
               <td colSpan={columns.length} className="text-center py-4">
-                No products found.
+                {tProduct("no-data")}
               </td>
             </tr>
           ) : (
@@ -334,30 +371,28 @@ export default function ProductTable() {
           onClick={() => setPage((old) => Math.max(old - 1, 1))}
           disabled={page === 1}
         >
-          Previous
+          {tProduct("previous")}
         </button>
 
         <span>
-          Page {page} of {Math.ceil((totalItems ?? 0) / pageSize)}
+          {tProduct("page")} {page} {tProduct("of")}{" "}
+          {Math.ceil((totalItems ?? 0) / pageSize)}
         </span>
 
         <button
           className="px-3 py-1 border rounded disabled:opacity-50"
           onClick={() =>
             setPage((old) =>
-              displayData
+              listProducts
                 ? Math.min(old + 1, Math.ceil(totalItems / pageSize))
                 : old + 1
             )
           }
           disabled={page === Math.ceil((totalItems ?? 0) / pageSize)}
         >
-          Next
+          {tProduct("next")}
         </button>
       </div>
     </div>
   );
-}
-function mutate(id: number, arg1: { onSuccess: () => void }) {
-  throw new Error("Function not implemented.");
 }

@@ -1,5 +1,5 @@
-import { NextConfig } from 'next';
-import createNextIntlPlugin from 'next-intl/plugin';
+import { NextConfig } from "next";
+import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
   webpack(config) {
@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
       fs: false,
     };
     return config;
+  },
+  images: {
+    domains: ["cdn.dummyjson.com"],
   },
 };
 

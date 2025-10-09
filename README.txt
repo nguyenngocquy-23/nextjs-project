@@ -16,3 +16,6 @@ Day5
 use 'Zustand' to manage context on frontend
 npm install zustand
 use 'DummyJson' to test data
+
+Day6
+config nextjs to use image

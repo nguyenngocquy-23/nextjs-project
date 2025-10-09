@@ -1,5 +1,45 @@
 {
+  "Logout": {
+    "title": "Đăng xuất"
+  },
   "HomePage": {
-    "title": "xin chào"
+    "title": "Chào mừng đến với cửa hàng của chúng tôi!",
+    "description": "Tìm sản phẩm..."
+  },
+  "Dashboard": {
+    "title": "Bảng điều khiển",
+    "cart": "Giỏ hàng"
+  },
+  "Product": {
+    "title": "Danh sách sản phẩm",
+    "add": "Thêm sản phẩm",
+    "search": "Tìm kiếm sản phẩm",
+    "th-id": "Mã",
+    "th-title": "Tên sản phẩm",
+    "th-price": "Giá",
+    "th-stock": "Tồn kho",
+    "th-actions": "Tác vụ",
+    "next": "Trang sau",
+    "previous": "Trang trước",
+    "loading": "Đang tải...",
+    "no-data": "Không tìm thấy sản phẩm.",
+    "page": "Trang",
+    "of": "của"
+  },
+  "Navbar": {
+    "Dashboard": "Bảng điều khiển",
+    "Products": "Sản phẩm",
+    "Carts": "Giỏ hàng",
+    "Logout": "Đăng xuất"
+  },
+  "Cart": {
+    "title": "Giỏ hàng của bạn",
+    "checkout": "Thanh toán",
+    "total": "Tổng cộng"
+  },
+  "Toast-product": {
+    "product-added": "Đã thêm sản phẩm vào giỏ hàng!",
+    "delete-product": "Đã xóa sản phẩm {id} thành công!",
+    "error": "Đã xảy ra lỗi. Vui lòng thử lại."
   }
 }

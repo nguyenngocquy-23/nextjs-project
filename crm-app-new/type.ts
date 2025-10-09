@@ -52,11 +52,6 @@ export type ProductResponse = {
   limit: number;
 };
 
-export type CartProduct = {
-  id: number;
-  quantity: number;
-};
-
 export type CartResponse = {
   id: number;
   userId: number;
@@ -83,3 +78,5 @@ export type CartItem = {
   discountedPrice: number;
   thumbnail: string;
 };
+
+export type mainAction = "Continue" | "Delete" | "Save" | "Submit";
