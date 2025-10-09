@@ -26,6 +26,25 @@
     "page": "Page",
     "of": "of"
   },
+  "AddProduct": {
+    "title": "Add New Product",
+    "back": "Back",
+    "i-title": "Title",
+    "i-price": "Price",
+    "i-stock": "Stock",
+    "i-category": "Category",
+    "i-brand": "Brand",
+    "i-discount": "Discount (%)",
+    "i-rating": "Rating",
+    "i-sku": "SKU",
+    "i-weight": "Weight (g)",
+    "i-policy": "Return Policy",
+    "i-description": "Description",
+    "i-shipping": "Shipping Info",
+    "i-warrantly": "Warranty Info",
+    "submit": "Add Product",
+    "adding": "Adding..."
+  },
   "Navbar": {
     "Dashboard": "Dashboard",
     "Products": "Products",

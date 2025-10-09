@@ -1,16 +1,8 @@
 // app/dashboard/layout.tsx
 // 'use client'
-import Navbar from "@/components/Navbar";
-import Sidebar from "@/components/Sidebar";
 import { useTranslations } from "next-intl";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function DashboardLayout() {
   // const cookieStore = await cookies();
   // const user = cookieStore.get("user");
 

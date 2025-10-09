@@ -1,14 +1,14 @@
 // components/Navbar.tsx
 "use client";
-import { usePathname, useRouter } from "next/navigation";
-import { Button } from "./ui/button";
-import { useEffect, useState } from "react";
-import { ThemeSwitcher } from "./ThemeSwitcher";
-import LocaleSwitcherSelect from "./SwitchLanguage";
 import { useTranslations } from "next-intl";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import LocaleSwitcherSelect from "./SwitchLanguage";
+import { ThemeSwitcher } from "./ThemeSwitcher";
+import { Button } from "./ui/button";
 
 export default function Navbar() {
-  const [title, setTitle] = useState("Dashboard");
+  // const [title, setTitle] = useState("Dashboard");
   const router = useRouter();
   const pathname = usePathname();
   const handleLogout = () => {
@@ -16,7 +16,7 @@ export default function Navbar() {
     console.log("Logged out");
     router.push("/login");
   };
-  
+
   const [pageKey, setPageKey] = useState<string>("Dashboard");
 
   const tLogout = useTranslations("Logout");
@@ -31,14 +31,13 @@ export default function Navbar() {
         : parts[parts.length - 1] || "";
     };
     const name = pageName();
-    setTitle(name.charAt(0).toUpperCase() + name.slice(1));
+    // setTitle(name.charAt(0).toUpperCase() + name.slice(1));
     setPageKey(name || "Dashboard");
   }, [pathname]);
 
   return (
     <header className="h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 flex items-center justify-between">
       <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-       
         {tNavbar(pageKey.charAt(0).toUpperCase() + pageKey.slice(1))}
       </h1>
       <div className="flex items-center gap-3">

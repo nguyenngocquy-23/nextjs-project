@@ -1,29 +1,16 @@
-import { Locale } from "next-intl";
-import { ChangeEvent, useTransition } from "react";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useParams, usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
 import { routing } from "@/i18n/routing";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { useTransition } from "react";
 
-type Props = {
-  defaultValue?: string;
-  items?: Array<{ value: string; label: string }>;
-  label?: string;
-};
-
-export default function LocaleSwitcherSelect({
-  defaultValue,
-  items,
-  label,
-}: Props) {
+export default function LocaleSwitcherSelect() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const pathname = usePathname();
@@ -33,7 +20,7 @@ export default function LocaleSwitcherSelect({
     startTransition(() => {
       // Loại bỏ locale hiện tại khỏi pathname
       const pathWithoutLocale = pathname.replace(
-        /^\/(en|vi)(\/|$)/, // regex khớp /en hoặc /vi đầu URL
+        /^\/(en|vi|ko)(\/|$)/, // regex khớp /en hoặc /vi đầu URL
         "/"
       );
       router.replace(`/${nextLocale}${pathWithoutLocale}`);
@@ -44,23 +31,28 @@ export default function LocaleSwitcherSelect({
     value: locale,
     label: locale,
   }));
-  
+
   const currentLocale = (params?.locale as string) || routing.defaultLocale;
 
   return (
-    <Select defaultValue={currentLocale} onValueChange={onSelectChange}>
-      <SelectTrigger className="w-[90px]">
-        <SelectValue placeholder={currentLocale.toUpperCase()} />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          {listLanguage.map((lang) => (
-            <SelectItem key={lang.value} value={lang.value}>
-              {lang.label}
-            </SelectItem>
-          ))}
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+    <div>
+      <Select defaultValue={currentLocale} onValueChange={onSelectChange}>
+        <SelectTrigger className="w-[90px]">
+          <SelectValue placeholder={currentLocale.toUpperCase()} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {listLanguage.map((lang) => (
+              <SelectItem key={lang.value} value={lang.value}>
+                {lang.label}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      {isPending && (
+        <span className="ml-2 text-sm text-gray-500">Loading...</span>
+      )}
+    </div>
   );
 }

@@ -1,28 +1,28 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, use } from "react";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
-} from "@tanstack/react-table";
-import { Product } from "@/type";
+import { useAddToCart } from "@/hooks/useCart";
 import {
   useDeleteProduct,
   useSearchProduct,
   useSortProduct,
 } from "@/hooks/useProducts";
-import { toast } from "sonner";
-import { Plus, Trash } from "lucide-react";
+import { Product } from "@/type";
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
 import clsx from "clsx";
-import { useAddToCart } from "@/hooks/useCart";
+import { Plus, Trash } from "lucide-react";
+import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
 import { AlertDialogDemo } from "@/components/AlertDialog";
+import { Button } from "@/components/ui/button";
 import { useTranslations } from "next-intl";
 
 export default function ProductTable() {
@@ -128,19 +128,18 @@ export default function ProductTable() {
     error: searchError,
   } = useSearchProduct(search);
 
-  const displayData =
-    search.trim() !== ""
+  const [listProducts, setListProducts] = useState<Product[]>([]);
+  const displayData = useMemo(() => {
+    return search.trim() !== ""
       ? searchData?.products ?? []
       : sortedData?.products ?? [];
+  }, [search, searchData, sortedData]);
 
   useEffect(() => {
     if (displayData.length > 0 && listProducts.length === 0) {
       setListProducts(displayData);
     }
-  }, [displayData]);
-
-  const [listProducts, setListProducts] = useState<Product[]>([]);
-  // console.log("listProducts", listProducts);
+  }, [displayData, listProducts.length]);
 
   const totalItems =
     search.trim() !== "" ? searchData?.total ?? 0 : sortedData?.total ?? 0;

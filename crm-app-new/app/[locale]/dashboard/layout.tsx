@@ -2,8 +2,6 @@
 
 import Navbar from "@/components/Navbar";
 import Sidebar from "@/components/Sidebar";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({
   children,

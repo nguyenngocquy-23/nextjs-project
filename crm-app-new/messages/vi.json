@@ -26,6 +26,25 @@
     "page": "Trang",
     "of": "của"
   },
+  "AddProduct": {
+    "title": "Thêm sản phẩm mới",
+    "back": "Quay lại",
+    "i-title": "Tên sản phẩm",
+    "i-price": "Giá",
+    "i-stock": "Tồn kho",
+    "i-category": "Danh mục",
+    "i-brand": "Thương hiệu",
+    "i-discount": "Giảm giá (%)",
+    "i-rating": "Đánh giá",
+    "i-sku": "SKU",
+    "i-weight": "Trọng lượng (g)",
+    "i-policy": "Chính sách hoàn trả",
+    "i-description": "Mô tả",
+    "i-shipping": "Thông tin vận chuyển",
+    "i-warrantly": "Thông tin bảo hành",
+    "submit": "Thêm sản phẩm",
+    "adding": "Đang thêm..."
+  },
   "Navbar": {
     "Dashboard": "Bảng điều khiển",
     "Products": "Sản phẩm",

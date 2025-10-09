@@ -1,15 +1,19 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { Product } from "@/type";
 import { useAddProduct } from "@/hooks/useProducts";
+import { Product } from "@/type";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { AlertDialog } from "../../components/ui/alert-dialog";
 
 export default function AddProductForm() {
   const router = useRouter();
   const { register, handleSubmit, reset } = useForm<Product>();
   const { mutate, isPending, isSuccess, data } = useAddProduct();
+  const tAddProduct = useTranslations("AddProduct");
 
   const onSubmit = (formData: Product) => {
     mutate(formData, {
@@ -22,8 +26,9 @@ export default function AddProductForm() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white shadow rounded-2xl mt-6">
+      <AlertDialog></AlertDialog>
       <button
-        onClick={() => router.back()}
+        onClick={() => router.push("/dashboard/products")}
         className="
       inline-flex items-center gap-1 text-sm text-blue-600 font-medium 
       hover:text-blue-800 transition-colors group
@@ -32,14 +37,16 @@ export default function AddProductForm() {
         <span className="group-hover:-translate-x-1 transition-transform">
           ←
         </span>
-        Back to Products
+        {tAddProduct("back")}
       </button>
-      <h2 className="text-2xl font-semibold mb-4">Add New Product</h2>
+      <h2 className="text-2xl font-semibold mb-4">{tAddProduct("title")}</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block font-medium">Title</label>
+            <label className="block font-medium">
+              {tAddProduct("i-title")}
+            </label>
             <input
               {...register("title", { required: true })}
               className="border rounded w-full p-2"
@@ -47,7 +54,9 @@ export default function AddProductForm() {
           </div>
 
           <div>
-            <label className="block font-medium">Category</label>
+            <label className="block font-medium">
+              {tAddProduct("i-category")}
+            </label>
             <input
               {...register("category")}
               className="border rounded w-full p-2"
@@ -55,7 +64,9 @@ export default function AddProductForm() {
           </div>
 
           <div>
-            <label className="block font-medium">Brand</label>
+            <label className="block font-medium">
+              {tAddProduct("i-brand")}
+            </label>
             <input
               {...register("brand")}
               className="border rounded w-full p-2"
@@ -63,7 +74,9 @@ export default function AddProductForm() {
           </div>
 
           <div>
-            <label className="block font-medium">Price</label>
+            <label className="block font-medium">
+              {tAddProduct("i-price")}
+            </label>
             <input
               type="number"
               {...register("price", { valueAsNumber: true })}
@@ -72,7 +85,9 @@ export default function AddProductForm() {
           </div>
 
           <div>
-            <label className="block font-medium">Discount (%)</label>
+            <label className="block font-medium">
+              {tAddProduct("i-discount")}
+            </label>
             <input
               type="number"
               {...register("discountPercentage", { valueAsNumber: true })}
@@ -81,7 +96,9 @@ export default function AddProductForm() {
           </div>
 
           <div>
-            <label className="block font-medium">Stock</label>
+            <label className="block font-medium">
+              {tAddProduct("i-stock")}
+            </label>
             <input
               type="number"
               {...register("stock", { valueAsNumber: true })}
@@ -90,7 +107,9 @@ export default function AddProductForm() {
           </div>
 
           <div>
-            <label className="block font-medium">Rating</label>
+            <label className="block font-medium">
+              {tAddProduct("i-rating")}
+            </label>
             <input
               type="number"
               step="0.1"
@@ -100,12 +119,14 @@ export default function AddProductForm() {
           </div>
 
           <div>
-            <label className="block font-medium">SKU</label>
+            <label className="block font-medium">{tAddProduct("i-sku")}</label>
             <input {...register("sku")} className="border rounded w-full p-2" />
           </div>
 
           <div>
-            <label className="block font-medium">Weight (g)</label>
+            <label className="block font-medium">
+              {tAddProduct("i-weight")}
+            </label>
             <input
               type="number"
               {...register("weight", { valueAsNumber: true })}
@@ -114,7 +135,9 @@ export default function AddProductForm() {
           </div>
 
           <div>
-            <label className="block font-medium">Return Policy</label>
+            <label className="block font-medium">
+              {tAddProduct("i-policy")}
+            </label>
             <input
               {...register("returnPolicy")}
               className="border rounded w-full p-2"
@@ -123,7 +146,9 @@ export default function AddProductForm() {
         </div>
 
         <div>
-          <label className="block font-medium">Description</label>
+          <label className="block font-medium">
+            {tAddProduct("i-description")}
+          </label>
           <textarea
             {...register("description")}
             className="border rounded w-full p-2 h-24"
@@ -131,7 +156,9 @@ export default function AddProductForm() {
         </div>
 
         <div>
-          <label className="block font-medium">Shipping Information</label>
+          <label className="block font-medium">
+            {tAddProduct("i-shipping")}
+          </label>
           <textarea
             {...register("shippingInformation")}
             className="border rounded w-full p-2 h-20"
@@ -139,7 +166,9 @@ export default function AddProductForm() {
         </div>
 
         <div>
-          <label className="block font-medium">Warranty Information</label>
+          <label className="block font-medium">
+            {tAddProduct("i-warrantly")}
+          </label>
           <textarea
             {...register("warrantyInformation")}
             className="border rounded w-full p-2 h-20"
@@ -151,7 +180,7 @@ export default function AddProductForm() {
           disabled={isPending}
           className="bg-blue-600 text-white px-4 py-2 rounded"
         >
-          {isPending ? "Adding..." : "Add Product"}
+          {isPending ? tAddProduct("adding") : tAddProduct("submit")}
         </button>
       </form>
 

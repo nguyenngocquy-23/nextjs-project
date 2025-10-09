@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 
 import { NextIntlClientProvider } from "next-intl";
-import { notFound } from "next/navigation";
 
 type Props = {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 };
 
 export const metadata: Metadata = {
@@ -14,18 +13,9 @@ export const metadata: Metadata = {
 };
 
 export default async function LocaleLayout({ children, params }: Props) {
-  const { locale } = params;
-
-  let messages;
-  try {
-    messages = (await import(`../../messages/${locale}.json`)).default;
-  } catch (error) {
-    notFound();
-  }
+  const { locale } = await params;
 
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
-      {children}
-    </NextIntlClientProvider>
+    <NextIntlClientProvider locale={locale}>{children}</NextIntlClientProvider>
   );
 }

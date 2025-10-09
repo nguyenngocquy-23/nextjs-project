@@ -1,0 +1,64 @@
+{
+  "Logout": {
+    "title": "로그아웃"
+  },
+  "HomePage": {
+    "title": "우리 상점에 오신 것을 환영합니다!",
+    "description": "최고의 상품을 여기에서 찾아보세요."
+  },
+  "Dashboard": {
+    "title": "대시보드",
+    "cart": "장바구니로 이동"
+  },
+  "Product": {
+    "title": "상품 목록",
+    "add": "상품 추가",
+    "search": "상품 검색",
+    "th-id": "번호",
+    "th-title": "제목",
+    "th-price": "가격",
+    "th-stock": "재고",
+    "th-actions": "작업",
+    "next": "다음",
+    "previous": "이전",
+    "loading": "불러오는 중...",
+    "no-data": "상품을 찾을 수 없습니다.",
+    "page": "페이지",
+    "of": "/"
+  },
+  "AddProduct": {
+    "title": "신규 상품 추가",
+    "back": "뒤로가기",
+    "i-title": "제목",
+    "i-price": "가격",
+    "i-stock": "재고",
+    "i-category": "카테고리",
+    "i-brand": "브랜드",
+    "i-discount": "할인율 (%)",
+    "i-rating": "평점",
+    "i-sku": "SKU",
+    "i-weight": "무게 (g)",
+    "i-policy": "반품 정책",
+    "i-description": "설명",
+    "i-shipping": "배송 정보",
+    "i-warrantly": "보증 정보",
+    "submit": "상품 추가",
+    "adding": "추가 중..."
+  },
+  "Navbar": {
+    "Dashboard": "대시보드",
+    "Products": "상품",
+    "Carts": "장바구니",
+    "Logout": "로그아웃"
+  },
+  "Cart": {
+    "title": "내 장바구니",
+    "checkout": "결제 진행",
+    "total": "총합"
+  },
+  "Toast-product": {
+    "product-added": "상품이 장바구니에 추가되었습니다!",
+    "delete-product": "상품 {id}이(가) 성공적으로 삭제되었습니다!",
+    "error": "오류가 발생했습니다. 다시 시도해 주세요."
+  }
+}
