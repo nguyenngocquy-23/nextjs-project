@@ -1,9 +1,9 @@
-import { Product } from "@/type";
+import { Product } from '@/type';
 
 export const fetchAllProducts = async () => {
-  const response = await fetch("https://dummyjson.com/products");
+  const response = await fetch('https://dummyjson.com/products');
   if (!response.ok) {
-    throw new Error("Network response swas not ok");
+    throw new Error('Network response swas not ok');
   }
   return response.json();
 };
@@ -12,10 +12,10 @@ export const paginationProducts = async (page: number, limit: number) => {
   const response = await fetch(
     `https://dummyjson.com/products?limit=${limit}&skip=${
       (page - 1) * limit
-    }&select=title,price,description,stock`
+    }&select=title,price,description,stock`,
   );
   if (!response.ok) {
-    throw new Error("Network response was not ok");
+    throw new Error('Network response was not ok');
   }
   return response.json();
 };
@@ -24,38 +24,48 @@ export const sortProducts = async (
   title: string,
   page: number,
   limit: number,
-  sortType: string
+  sortType: string,
 ) => {
   const response = await fetch(
-    `https://dummyjson.com/products?sortBy=${title}&order=${sortType}`
+    `https://dummyjson.com/products?sortBy=${title}&order=${sortType}`,
   );
   if (!response.ok) {
-    throw new Error("Network response was not ok");
+    throw new Error('Network response was not ok');
   }
   return response.json();
 };
 
 export const searchProducts = async (key: string) => {
   const response = await fetch(
-    `https://dummyjson.com/products/search?q=${key}`
+    `https://dummyjson.com/products/search?q=${key}`,
   );
   if (!response.ok) {
-    throw new Error("Network response was not ok");
+    throw new Error('Network response was not ok');
   }
-  return response.json();
+  const data = await response.json();
+  // return response.json();
+  const filtered = data.products.filter((product: Product) =>
+    product.title.toLowerCase().includes(key.toLowerCase()),
+  );
+
+  return {
+    ...data,
+    products: filtered,
+    total: filtered.length,
+  };
 };
 
 export const addProduct = async (product: Product): Promise<Product> => {
-  const response = await fetch("https://dummyjson.com/products/add", {
-    method: "POST",
+  const response = await fetch('https://dummyjson.com/products/add', {
+    method: 'POST',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(product),
   });
 
   if (!response.ok) {
-    throw new Error("Failed to add product");
+    throw new Error('Failed to add product');
   }
 
   const data = await response.json();
@@ -64,10 +74,10 @@ export const addProduct = async (product: Product): Promise<Product> => {
 
 export const updateProduct = async (product: Product): Promise<Product> => {
   const updateProduct = { ...product };
-  console.log("updateProduct...", updateProduct);
+  console.log('updateProduct...', updateProduct);
   const response = await fetch(`https://dummyjson.com/products/${product.id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       title: product.title,
       price: product.price,
@@ -76,7 +86,7 @@ export const updateProduct = async (product: Product): Promise<Product> => {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to add product");
+    throw new Error('Failed to add product');
   }
 
   const data = await response.json();
@@ -85,11 +95,11 @@ export const updateProduct = async (product: Product): Promise<Product> => {
 
 export const deleteProduct = async (productId: number): Promise<Product> => {
   const response = await fetch(`https://dummyjson.com/products/${productId}`, {
-    method: "DELETE",
+    method: 'DELETE',
   });
 
   if (!response.ok) {
-    throw new Error("Failed to add product");
+    throw new Error('Failed to add product');
   }
 
   const data = await response.json();

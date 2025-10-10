@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 // Kiểu dữ liệu user
 export type User = {
@@ -25,7 +25,7 @@ export const useAuthStore = create<AuthState>()(
       logout: () => set({ token: null, user: null }),
     }),
     {
-      name: "auth-storage", // tên key lưu trong localStorage
-    }
-  )
+      name: 'auth-storage', // tên key lưu trong localStorage
+    },
+  ),
 );
