@@ -19,14 +19,12 @@ export default function LoginForm() {
     e.preventDefault();
     if (username && password) {
       try {
-        const data = await login(); // gọi API dummyjson
+        const data = await login(username, password); // gọi API dummyjson
         console.log('✅ Login data:', data);
-
         // Lưu token và user vào Zustand
         useAuthStore
           .getState()
-          .setAuth(data.token, { id: data.id, username: data.username });
-
+          .setAuth(data.accessToken, { id: data.id, username: data.username });
         toast.success('Login successful!');
         router.push('/dashboard');
       } catch (error) {
@@ -43,21 +41,27 @@ export default function LoginForm() {
         </h2>
         <Input
           type="email"
+          required
           placeholder="Email"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
         <Input
           type="password"
+          required
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button type="submit" className="w-full" onClick={handleLogin}>
+        <Button
+          type="submit"
+          className="w-full"
+          onClick={(e) => handleLogin(e)}
+        >
           Sign In
         </Button>
       </form>
-      <div className="absolute right-1 top-1 mx-auto max-w-sm transform overflow-hidden rounded-xl bg-white shadow-lg transition duration-500 hover:scale-105 hover:shadow-2xl dark:bg-gray-900">
+      <div className="absolute left-1 top-1 mx-auto max-w-sm transform overflow-hidden rounded-xl bg-white shadow-lg transition duration-500 hover:scale-105 hover:shadow-2xl dark:bg-gray-900">
         <div className="relative">
           {/* <img className="w-full h-60 object-cover transition-transform duration-300 ease-in-out hover:scale-110" src="https://source.unsplash.com/400x300/?product,tech" alt="Product Image"> */}
           <span className="absolute right-2 top-2 rounded bg-green-500 px-2 py-1 text-xs font-semibold text-white shadow">

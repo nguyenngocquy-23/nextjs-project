@@ -19,3 +19,6 @@ use 'DummyJson' to test data
 
 Day6
 config nextjs to use image
+
+Day7
+use zustand: 'create' to init custom hook, 'set' to update state in store ò zustand and it will merge to current store

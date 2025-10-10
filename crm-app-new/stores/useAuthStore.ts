@@ -25,7 +25,7 @@ export const useAuthStore = create<AuthState>()(
       logout: () => set({ token: null, user: null }),
     }),
     {
-      name: 'auth-storage', // tên key lưu trong localStorage
+      name: 'auth-storage',
     },
   ),
 );
